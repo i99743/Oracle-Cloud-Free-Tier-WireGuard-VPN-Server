@@ -102,24 +102,24 @@ PrivateKey = <ВСТАВИТЬ server_private.key>
 # Выберите ОДИН из двух вариантов правил маршрутизации:
 # =============================================================
 
-# Вариант А — простые правила (порт открывается отдельно, шаг 4)
+# ✅ Вариант А — РЕКОМЕНДУЕТСЯ (порт управляется автоматически, шаг 4 не нужен)
+# Порт открывается при старте VPN и закрывается при остановке — ничего не забудешь
 PostUp   = iptables -I FORWARD -i wg0 -j ACCEPT; \
            iptables -I FORWARD -o wg0 -j ACCEPT; \
-           iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE
+           iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE; \
+           iptables -I INPUT -p udp --dport 51820 -j ACCEPT
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; \
            iptables -D FORWARD -o wg0 -j ACCEPT; \
-           iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE
+           iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE; \
+           iptables -D INPUT -p udp --dport 51820 -j ACCEPT
 
-# Вариант Б — включают открытие порта (шаг 4 не нужен)
-# Порт автоматически открывается при старте VPN и закрывается при остановке
+# Вариант Б — простой (порт нужно открыть вручную на шаге 4)
 # PostUp   = iptables -I FORWARD -i wg0 -j ACCEPT; \
 #            iptables -I FORWARD -o wg0 -j ACCEPT; \
-#            iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE; \
-#            iptables -I INPUT -p udp --dport 51820 -j ACCEPT
+#            iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE
 # PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; \
 #            iptables -D FORWARD -o wg0 -j ACCEPT; \
-#            iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE; \
-#            iptables -D INPUT -p udp --dport 51820 -j ACCEPT
+#            iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE
 
 [Peer]
 PublicKey  = <ВСТАВИТЬ client_public.key>
