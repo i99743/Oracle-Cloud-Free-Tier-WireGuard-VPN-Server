@@ -14,8 +14,7 @@
 1. [Конфигурация сервера](#-5-конфигурация-сервера)
 1. [Включение IP Forwarding](#-6-включение-ip-forwarding)
 1. [Запуск VPN](#-7-запуск-vpn)
-1. [Проверка](#-8-проверка)
-1. [Полезные команды](#-полезные-команды)
+
 
 -----
 
@@ -46,8 +45,6 @@ cd /etc/wireguard
 # umask 077 — ограничивает права доступа к создаваемым файлам
 umask 077
 
-# (Опционально как пример) Создаём папки для порядка
-mkdir -p server clients/client1
 
 # Генерируем ключи сервера и клиента
 wg genkey | tee server_private.key | wg pubkey > server_public.key
@@ -66,12 +63,12 @@ wg genpsk
 ip -br link
 
 # Ключи сервера
-cat /etc/wireguard/server/server_private.key
-cat /etc/wireguard/server/server_public.key
+cat /etc/wireguard/server_private.key
+cat /etc/wireguard/server_public.key
 
 # Ключи клиента
-cat /etc/wireguard/clients/client/client_private.key
-cat /etc/wireguard/clients/client/client_public.key
+cat /etc/wireguard/client_private.key
+cat /etc/wireguard/client_public.key
 ```
 
 -----
