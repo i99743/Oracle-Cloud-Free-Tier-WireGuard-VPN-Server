@@ -1,0 +1,9 @@
+# Автоматические правила для интернета (активируются сами при старте VPN)
+#PostUp = iptables -I FORWARD -i wg0 -j ACCEPT; iptables -I FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE; iptables -I INPUT -p udp --dport 51820 -j ACCEPT;
+#PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE; iptables -D INPUT -p udp --dport 51820 -j ACCEPT;
+
+#PostUp = iptables -I FORWARD -i wg0 -j ACCEPT; iptables -I FORWARD -o wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o ens3 -j MASQUERADE; iptables -I INPUT -p udp --dport 51820 -j ACCEPT; ip rule add from 172.20.0.0/24 table 100;
+#PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -D FORWARD -o wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o ens3 -j MASQUERADE; iptables -D INPUT -p udp --dport 51820 -j ACCEPT; ip rule del from 172.20.0.0/24 table 100;
+
+PostUp = iptables -I FORWARD -i wg0 -s 10.8.0.0/24 -j ACCEPT; iptables -I FORWARD -o wg0 -d 10.8.0.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT; iptables -I FORWARD -s 172.20.0.0/24 -j ACCEPT; iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE; iptables -t nat -A POSTROUTING -s 172.20.0.0/24 -o ens3 -j MASQUERADE; iptables -I INPUT -p udp --dport 51820 -j ACCEPT; ip rule add from 172.20.0.0/24 table 100;
+PostDown = iptables -D FORWARD -i wg0 -s 10.8.0.0/24 -j ACCEPT; iptables -D FORWARD -o wg0 -d 10.8.0.0/24 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT; iptables -D FORWARD -s 172.20.0.0/24 -j ACCEPT; iptables -t nat -D POSTROUTING -s 10.8.0.0/24 -o ens3 -j MASQUERADE; iptables -t nat -D POSTROUTING -s 172.20.0.0/24 -o ens3 -j MASQUERADE; iptables -D INPUT -p udp --dport 51820 -j ACCEPT; ip rule del from 172.20.0.0/24 table 100;
